@@ -4,37 +4,25 @@
 
 class AVL_Tree
 {
-    
     private:
         
         struct TreeNode
         {
+            TreeNode(const int& data) : data(data) {};
             int data;
             TreeNode* leftChild;
             TreeNode* rightChild;
         };
-
         TreeNode* root;
         int size;
-        TreeNode remove(TreeNode current, const int& dataToRemove);
-        TreeNode findSuccessor(TreeNode current);       
-    
+        void deleteNode(const int& data);
+        TreeNode* findSuccessor(TreeNode* current);
+        TreeNode* remove(TreeNode* current, const int& dataToRemove);
     public:
 
         AVL_Tree();
-        
         void add(const int& data);
-        
-        TreeNode& insert(TreeNode& current, TreeNode& newNode);
-       
-        void deleteNode(const int& data);
-        
-        TreeNode find(TreeNode current, const int& dataToFind);
-
-        void inOrder(TreeNode current);
-
-        
-
+        TreeNode* insert(TreeNode* current, TreeNode* newNode);
 };
 
 #endif
