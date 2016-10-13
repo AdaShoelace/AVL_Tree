@@ -11,6 +11,11 @@ AVL_Tree::AVL_Tree()
     this->size = 0;   
 }
 
+void AVL_Tree::TreeNode::print()
+{
+
+}
+
 /*
  *Adds new node to the tree by calling insert()
  */

@@ -12,6 +12,7 @@ class AVL_Tree
             int data;
             TreeNode* leftChild;
             TreeNode* rightChild;
+            void print();
         };
         TreeNode* root;
         int size;
