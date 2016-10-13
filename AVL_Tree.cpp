@@ -1,6 +1,7 @@
 #include "AVL_Tree.h"
 #include "stddef.h"
 #include <stdexcept>
+#include <iostream>
 
 /*
  * Constructor for the AVL_Tree
@@ -11,9 +12,60 @@ AVL_Tree::AVL_Tree()
     this->size = 0;   
 }
 
-void AVL_Tree::TreeNode::print()
+void AVL_Tree::print()
 {
+    root->printTree();
+}
 
+void AVL_Tree::TreeNode::printTree()
+{
+    if(rightChild != NULL)
+    {
+        rightChild->printTree(true, "");
+    }
+    printNodeValue();
+    if(leftChild != NULL)
+    {
+        leftChild->printTree(false, "");
+    }
+}
+
+void AVL_Tree::TreeNode::printTree(bool isRight, std::string indent)
+{
+    if(rightChild != NULL)
+    {
+        rightChild->printTree(true, indent + (isRight ? "       " : " |     "));
+    }
+    std::cout << indent;
+    if(isRight)
+    {
+        std::cout << " /"; 
+    }
+    else
+    {
+        std::cout << " \\";
+    }
+    std::cout << "----- ";
+    printNodeValue();
+    if(leftChild != NULL)
+    {
+        leftChild->printTree(false, indent + (isRight ? " |     " : "       "));
+    }
+}
+
+void AVL_Tree::TreeNode::printNodeValue()
+{
+    std::cout << data << "\n";
+}
+
+void AVL_Tree::inOrder(TreeNode* current)
+{
+    if(current != NULL)
+    {
+        inOrder(current->leftChild);
+        std::cout << current->data << std::endl;
+        inOrder(current->rightChild);
+    }
 }
 
 /*
@@ -32,54 +84,42 @@ void AVL_Tree::add(const int& data)
  */
 AVL_Tree::TreeNode* AVL_Tree::insert(TreeNode* current, TreeNode* newNode)
 {
-    TreeNode* retNode = current;
-
-    if(retNode->data != newNode->data)
+    if(current == NULL)
     {
-        if(retNode == NULL) 
-        {
-            retNode = newNode; 
-        }
-        else if(newNode->data < retNode->data)
-        {
-            if(retNode->leftChild == NULL) 
-            {
-                retNode->leftChild = newNode; 
-            }
-            else
-            {
-                retNode->leftChild = insert(retNode->leftChild, newNode);
-            }
-        }
-        else if(newNode->data > retNode->data) 
-        {
-            if(retNode->rightChild == NULL) 
-            {
-                retNode->rightChild = newNode; 
-            }
-            else
-            {
-                retNode->rightChild = insert(retNode->rightChild, newNode);
-            }
-        }
-        else
-        {
-            throw "Data already exixts in tree!";
-        }
+        return newNode;
     }
-
-    return retNode;
+    if(newNode->data < current->data)
+    {
+        current->leftChild = insert(current->leftChild, newNode);
+    }
+    else if(newNode->data > current->data)
+    {
+        current->rightChild = insert(current->rightChild, newNode);
+    }
+    else 
+    {
+        throw "Data already exist in tree";
+    }
+    return current;
 }
 
 void AVL_Tree::deleteNode(const int& data)
 {
-
+    TreeNode* temp = remove(this->root, data);
+    if(temp != NULL)
+    {
+        this->root = temp;
+        size--;
+    }
 }
 
 AVL_Tree::TreeNode* AVL_Tree::remove(TreeNode* current, const int& dataToRemove)
 {
-    if(current == NULL) return current;
-    else if(dataToRemove < current->data) 
+    if(current == NULL) 
+    {
+        return current; 
+    }
+    if(dataToRemove < current->data)
     {
         current->leftChild = remove(current->leftChild, dataToRemove);
     }
@@ -87,57 +127,46 @@ AVL_Tree::TreeNode* AVL_Tree::remove(TreeNode* current, const int& dataToRemove)
     {
         current->rightChild = remove(current->rightChild, dataToRemove);
     }
-    else
+    else if(dataToRemove == current->data)
     {
-        if(current->leftChild == NULL && current->rightChild == NULL) 
+        TreeNode* temp = NULL;
+        //No children
+        if(current->leftChild == NULL && current->rightChild == NULL)
         {
             delete current;
             current = NULL;
         }
-        else if(current->leftChild == NULL)
+        //One child
+        else if(current->leftChild != NULL && current->rightChild == NULL)
         {
-            TreeNode* temp = current;
-            current = current->rightChild;
-            delete temp;
+            temp = current->leftChild;
+            current->data = temp->data;
+            current->leftChild = remove(current->leftChild, temp->data);
         }
-        else if(current->rightChild == NULL)
+        else if(current->leftChild == NULL && current->rightChild != NULL)
         {
-            TreeNode* temp = current;
-            current = current->leftChild;
-            delete temp;
+            temp = current->rightChild;
+            current->data = temp->data;
+            current->rightChild = remove(current->rightChild, temp->data);
         }
-        else
+        //Two children
+        else if(current->leftChild != NULL && current->rightChild != NULL)
         {
-            TreeNode* temp = findSuccessor(current);
+            temp = findSuccessor(current->rightChild);
             current->data = temp->data;
             remove(current->rightChild, temp->data);
         }
     }
     return current;
 }
-
 AVL_Tree::TreeNode* AVL_Tree::findSuccessor(TreeNode* current)
 {
-    if(current->rightChild != NULL)
-    {
-        current = current->rightChild; 
-        
-        while(current->leftChild != NULL)
-        {
-            current = current->leftChild;
-        }
-    }
-    else if(current->leftChild != NULL)
+    while(current->leftChild != NULL)
     {
         current = current->leftChild; 
     }
-    else
-    {
-        current = NULL; 
-    }
     return current;
 }
-
 
 
 
