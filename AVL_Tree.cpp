@@ -73,9 +73,16 @@ void AVL_Tree::inOrder(TreeNode* current)
  */
 void AVL_Tree::add(const int& data)
 {
-    TreeNode* node = new TreeNode(data);
-    this->root = insert(this->root, node);
-    size++;
+    try 
+    {
+        TreeNode* node = new TreeNode(data);
+        this->root = insert(this->root, node);
+        size++;
+    }
+    catch(std::string s)
+    {
+        std::cout << s << std::endl; 
+    }
 }
 
 /*
@@ -98,7 +105,7 @@ AVL_Tree::TreeNode* AVL_Tree::insert(TreeNode* current, TreeNode* newNode)
     }
     else 
     {
-        throw "Data already exist in tree";
+        throw std::string("Data already exist in tree");
     }
     return current;
 }
@@ -159,6 +166,12 @@ AVL_Tree::TreeNode* AVL_Tree::remove(TreeNode* current, const int& dataToRemove)
     }
     return current;
 }
+
+AVL_Tree::~AVL_Tree()
+{
+    delete this->root;
+}
+
 AVL_Tree::TreeNode* AVL_Tree::findSuccessor(TreeNode* current)
 {
     while(current->leftChild != NULL)

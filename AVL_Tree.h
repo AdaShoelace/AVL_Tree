@@ -25,6 +25,7 @@ class AVL_Tree
     public:
 
         AVL_Tree();
+        ~AVL_Tree();
         void deleteNode(const int& data);
         void add(const int& data);
         void print();

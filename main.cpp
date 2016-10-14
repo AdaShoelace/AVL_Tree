@@ -14,6 +14,7 @@ int main()
     at->add(24);
     at->add(17);
     at->add(14);
+    at->add(9);
     at->print();
     at->deleteNode(20);
     at->print();
