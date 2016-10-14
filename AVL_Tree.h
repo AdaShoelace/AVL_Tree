@@ -12,20 +12,21 @@ class AVL_Tree
             int data;
             TreeNode* leftChild;
             TreeNode* rightChild;
-            void printTree(bool isRight, std::string indent);
+            void printTree(bool isRight, const std::string& indent);
             void printTree();
             void printNodeValue();
         };
-        TreeNode* root;
+        
         int size;
+        TreeNode* root;
         TreeNode* findSuccessor(TreeNode* current);
         TreeNode* remove(TreeNode* current, const int& dataToRemove);
+        TreeNode* insert(TreeNode* current, TreeNode* newNode);
     public:
 
-        void deleteNode(const int& data);
         AVL_Tree();
+        void deleteNode(const int& data);
         void add(const int& data);
-        TreeNode* insert(TreeNode* current, TreeNode* newNode);
         void print();
         void inOrder(TreeNode* current);
 };

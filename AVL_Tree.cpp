@@ -30,7 +30,7 @@ void AVL_Tree::TreeNode::printTree()
     }
 }
 
-void AVL_Tree::TreeNode::printTree(bool isRight, std::string indent)
+void AVL_Tree::TreeNode::printTree(bool isRight, const std::string& indent)
 {
     if(rightChild != NULL)
     {
