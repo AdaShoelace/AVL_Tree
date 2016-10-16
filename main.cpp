@@ -1,25 +1,31 @@
 #include "AVL_Tree.h"
+#include <stdlib.h>
+#include <vector>
+
+using std::vector;
 
 int main()
 {
-    AVL_Tree* at = new AVL_Tree();
+    AVL_Tree at;
+    vector<int> list;
 
-    at->add(12);
-    at->add(9);
-    at->add(45);
-    at->add(2);
-    at->add(20);
-    at->add(19);
-    at->add(25);
-    at->add(24);
-    at->add(17);
-    at->add(14);
-    at->add(9);
-    at->print();
-    at->deleteNode(20);
-    at->print();
-    delete at;
+    for(int i = 0; i < 20; i++)
+    {
+        int x = rand() % 100;
+        list.push_back(x);
+        at.add(x);
+    }
 
+    at.print();
+    at.add(list[0]);
+    at.print();
+    for(int i = 19; i >= 10; i--)
+    {
+        at.deleteNode(list[i]);
+
+    }
+
+    at.print();
     return 0;
 
 

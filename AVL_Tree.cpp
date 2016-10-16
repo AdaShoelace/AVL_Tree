@@ -4,6 +4,9 @@
 #include <iostream>
 #include <algorithm>
 
+/*
+ * Constructor for TreeNode
+ */
 AVL_Tree::TreeNode::TreeNode(const int& data)
         : data(data), height(1), leftChild(NULL), rightChild(NULL){};
 
@@ -57,11 +60,17 @@ AVL_Tree::AVL_Tree()
     this->size = 0;
 }
 
+/**
+ * Destructor
+ */
 AVL_Tree::~AVL_Tree()
 {
     destruct(this->root);
 }
 
+/**
+ * Deletes TreeNode objects recursively
+ */
 void AVL_Tree::destruct(TreeNode* root)
 {
     if(root != NULL)
@@ -73,6 +82,9 @@ void AVL_Tree::destruct(TreeNode* root)
     }
 }
 
+/**
+ *Removes specified node
+ */
 void AVL_Tree::deleteNode(const int& data)
 {
     TreeNode* temp = remove(this->root, data);
@@ -83,7 +95,7 @@ void AVL_Tree::deleteNode(const int& data)
     }
 }
 
-/*
+/**
  *Adds new node to the tree by calling insert()
  */
 void AVL_Tree::add(const int& data)
@@ -105,6 +117,9 @@ void AVL_Tree::print()
     root->printTree();
 }
 
+/**
+ * Prints the tree in ascending order
+ */
 void AVL_Tree::inOrder(TreeNode* current)
 {
     if(current != NULL)
@@ -115,7 +130,7 @@ void AVL_Tree::inOrder(TreeNode* current)
     }
 }
 
-/*
+/**
  *Recursively traverse the tree to find the correct place for the new node and then
  *returns the tree.
  */
@@ -141,7 +156,23 @@ AVL_Tree::TreeNode* AVL_Tree::insert(TreeNode* current, TreeNode* newNode)
     return balance(current);
 }
 
+AVL_Tree::TreeNode* AVL_Tree::findMin(TreeNode *current)
+{
+    return current->leftChild ? findMin(current->leftChild) : current;
+}
 
+AVL_Tree::TreeNode* AVL_Tree::removeMin(TreeNode *current)
+{
+    if(current->leftChild == 0)
+    {
+        return current->rightChild;
+    }
+    return balance(current);
+}
+
+/**
+ * Recursively finds the TreeNode that matches 'dataToRemove' and erase it from the tree then returns the new tree
+ */
 AVL_Tree::TreeNode* AVL_Tree::remove(TreeNode* current, const int& dataToRemove)
 {
     if(current == NULL)
@@ -156,7 +187,7 @@ AVL_Tree::TreeNode* AVL_Tree::remove(TreeNode* current, const int& dataToRemove)
     {
         current->rightChild = remove(current->rightChild, dataToRemove);
     }
-    else if(dataToRemove == current->data)
+    else //if(dataToRemove == current->data)
     {
         TreeNode* temp = NULL;
         //No children
@@ -181,12 +212,22 @@ AVL_Tree::TreeNode* AVL_Tree::remove(TreeNode* current, const int& dataToRemove)
             //Two children
         else if(current->leftChild != NULL && current->rightChild != NULL)
         {
+
             temp = findSuccessor(current->rightChild);
-            current->data = temp->data;
-            remove(current->rightChild, temp->data);
+            if (temp != NULL) {
+                current->data = temp->data;
+                remove(current->rightChild, temp->data);
+            }
+            else
+            {
+                current->data = current->leftChild->data;
+                delete current->leftChild;
+                current->leftChild = NULL;
+            }
+
         }
     }
-    //return current;
+
     return balance(current);
 }
 
@@ -202,6 +243,9 @@ int AVL_Tree::height(TreeNode* current)
     return current->height;
 }
 
+/**
+ * Returns the balance factor for the argument(TreeNode pointer)
+ */
 int AVL_Tree::getBalance(TreeNode* current)
 {
     if(current == NULL)
@@ -211,6 +255,9 @@ int AVL_Tree::getBalance(TreeNode* current)
     return height(current->rightChild) - height(current->leftChild);
 }
 
+/**
+ * Sets the height of the specified TreeNode
+ */
 void AVL_Tree::fixHeight(TreeNode* current)
 {
     int hl = height(current->leftChild);
@@ -219,28 +266,39 @@ void AVL_Tree::fixHeight(TreeNode* current)
     current->height = (hl > hr ? hl : hr) + 1;
 }
 
+/**
+ * Takes TreeNode pointer as arguement and balances the tree if it isn't NULL
+ */
 AVL_Tree::TreeNode* AVL_Tree::balance(TreeNode* current)
 {
-    fixHeight(current);
-    if(getBalance(current) == 2)
-    {
-        if(getBalance(current->rightChild) < 0)
+    if (current != NULL) {
+        fixHeight(current);
+        if(getBalance(current) == 2)
         {
-            current->rightChild = rotateRight(current->rightChild);
+            if(getBalance(current->rightChild) < 0)
+            {
+                current->rightChild = rotateRight(current->rightChild);
+            }
+            return rotateLeft(current);
         }
-        return rotateLeft(current);
-    }
-    if(getBalance(current) == -2)
-    {
-        if(getBalance(current->leftChild) > 0)
+        if(getBalance(current) == -2)
         {
-            current->leftChild = rotateLeft(current->leftChild);
+            if(getBalance(current->leftChild) > 0)
+            {
+                current->leftChild = rotateLeft(current->leftChild);
+            }
+            return rotateRight(current);
         }
-        return rotateRight(current);
+        return current;
+    } else {
+        return NULL;
     }
-    return current;
 }
 
+/**
+ * Preforms a left rotation
+ * Returns the rotated subtree
+ */
 AVL_Tree::TreeNode* AVL_Tree::rotateLeft(TreeNode* current)
 {
     TreeNode* right = current->rightChild;
@@ -251,6 +309,9 @@ AVL_Tree::TreeNode* AVL_Tree::rotateLeft(TreeNode* current)
     return right;
 }
 
+/**
+ * Preforms a right rotation
+ */
 AVL_Tree::TreeNode* AVL_Tree::rotateRight(TreeNode* current)
 {
     TreeNode* left = current->leftChild;
@@ -261,9 +322,14 @@ AVL_Tree::TreeNode* AVL_Tree::rotateRight(TreeNode* current)
     return left;
 }
 
-
+/**
+ * Takes TreeNode pointer as argument and return the "leftest"(smallest) node in the right subtree.
+ */
 AVL_Tree::TreeNode* AVL_Tree::findSuccessor(TreeNode* current)
 {
+    if(current->leftChild == NULL){
+        return NULL;
+    }
     while(current->leftChild != NULL)
     {
         current = current->leftChild;
