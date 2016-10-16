@@ -1,4 +1,3 @@
-
 all: main.o AVL_Tree.o
 	g++ main.o AVL_Tree.o -o AVL_Tree
 

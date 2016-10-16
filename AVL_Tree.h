@@ -8,8 +8,9 @@ class AVL_Tree
         
         struct TreeNode
         {
-            TreeNode(const int& data) : data(data) {};
+            TreeNode(const int& data);
             int data;
+            int height;
             TreeNode* leftChild;
             TreeNode* rightChild;
             void printTree(bool isRight, const std::string& indent);
@@ -22,6 +23,12 @@ class AVL_Tree
         TreeNode* findSuccessor(TreeNode* current);
         TreeNode* remove(TreeNode* current, const int& dataToRemove);
         TreeNode* insert(TreeNode* current, TreeNode* newNode);
+        int height(TreeNode* current);
+        TreeNode* balance(TreeNode* current, const int& value);
+        int getBalance(TreeNode* current);
+        TreeNode* rotateLeft(TreeNode* current);
+        TreeNode* rotateRight(TreeNode* current);
+        void destruct(TreeNode* root);
     public:
 
         AVL_Tree();

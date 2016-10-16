@@ -2,32 +2,14 @@
 #include "stddef.h"
 #include <stdexcept>
 #include <iostream>
+#include <algorithm>
 
-/*
- * Constructor for the AVL_Tree
- */
-AVL_Tree::AVL_Tree()
-{
-    this->root = NULL;
-    this->size = 0;   
-}
+AVL_Tree::TreeNode::TreeNode(const int& data) 
+    : data(data), height(1), leftChild(NULL), rightChild(NULL){};
 
-void AVL_Tree::print()
+void AVL_Tree::TreeNode::printNodeValue()
 {
-    root->printTree();
-}
-
-void AVL_Tree::TreeNode::printTree()
-{
-    if(rightChild != NULL)
-    {
-        rightChild->printTree(true, "");
-    }
-    printNodeValue();
-    if(leftChild != NULL)
-    {
-        leftChild->printTree(false, "");
-    }
+    std::cout << data << "\n";
 }
 
 void AVL_Tree::TreeNode::printTree(bool isRight, const std::string& indent)
@@ -53,18 +35,51 @@ void AVL_Tree::TreeNode::printTree(bool isRight, const std::string& indent)
     }
 }
 
-void AVL_Tree::TreeNode::printNodeValue()
+void AVL_Tree::TreeNode::printTree()
 {
-    std::cout << data << "\n";
+    if(rightChild != NULL)
+    {
+        rightChild->printTree(true, "");
+    }
+    printNodeValue();
+    if(leftChild != NULL)
+    {
+        leftChild->printTree(false, "");
+    }
 }
 
-void AVL_Tree::inOrder(TreeNode* current)
+/*
+ * Constructor for the AVL_Tree
+ */
+AVL_Tree::AVL_Tree()
 {
-    if(current != NULL)
+    this->root = NULL;
+    this->size = 0;   
+}
+
+AVL_Tree::~AVL_Tree()
+{
+    destruct(this->root);
+}
+
+void AVL_Tree::destruct(TreeNode* root)
+{
+    if(root != NULL)
     {
-        inOrder(current->leftChild);
-        std::cout << current->data << std::endl;
-        inOrder(current->rightChild);
+        destruct(root->rightChild);
+        destruct(root->leftChild);
+        delete root;
+        root = NULL;
+    }
+}
+
+void AVL_Tree::deleteNode(const int& data)
+{
+    TreeNode* temp = remove(this->root, data);
+    if(temp != NULL)
+    {
+        this->root = temp;
+        size--;
     }
 }
 
@@ -82,6 +97,21 @@ void AVL_Tree::add(const int& data)
     catch(std::string s)
     {
         std::cout << s << std::endl; 
+    }
+}
+
+void AVL_Tree::print()
+{
+    root->printTree();
+}
+
+void AVL_Tree::inOrder(TreeNode* current)
+{
+    if(current != NULL)
+    {
+        inOrder(current->leftChild);
+        std::cout << current->data << std::endl;
+        inOrder(current->rightChild);
     }
 }
 
@@ -110,15 +140,6 @@ AVL_Tree::TreeNode* AVL_Tree::insert(TreeNode* current, TreeNode* newNode)
     return current;
 }
 
-void AVL_Tree::deleteNode(const int& data)
-{
-    TreeNode* temp = remove(this->root, data);
-    if(temp != NULL)
-    {
-        this->root = temp;
-        size--;
-    }
-}
 
 AVL_Tree::TreeNode* AVL_Tree::remove(TreeNode* current, const int& dataToRemove)
 {
@@ -167,10 +188,35 @@ AVL_Tree::TreeNode* AVL_Tree::remove(TreeNode* current, const int& dataToRemove)
     return current;
 }
 
-AVL_Tree::~AVL_Tree()
+/**
+ * Returns height of tree
+ */
+int AVL_Tree::height(TreeNode* current)
 {
-    delete this->root;
+    if(current == NULL)
+    {
+        return 0;       
+    }
+    return current->height;
 }
+
+int AVL_Tree::getBalance(TreeNode* current)
+{
+    if(current == NULL)
+    {
+        return 0; 
+    }
+    return height(current->leftChild) - height(current->rightChild);
+}
+
+AVL_Tree::TreeNode* AVL_Tree::rotateLeft(TreeNode* current)
+{
+}
+
+AVL_Tree::TreeNode* AVL_Tree::rotateRight(TreeNode* current)
+{
+}
+
 
 AVL_Tree::TreeNode* AVL_Tree::findSuccessor(TreeNode* current)
 {
