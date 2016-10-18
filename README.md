@@ -5,18 +5,23 @@ Public Member Functions
  
 <a href="class_a_v_l___tree.html#a8805d01aec06626db63d42fa9281dba2" class="el">~AVL_Tree</a> ()
  
+ 
 void 
 <a href="class_a_v_l___tree.html#aff7301186394b40bca53af46d7c92211" class="el">deleteNode</a> (const int &data)
  
+ 
 void 
 <a href="class_a_v_l___tree.html#ab11bf2912ede7574b34ed15be8e78696" class="el">add</a> (const int &data)
  
+ 
 <a href="" id="ad8939b39126d63d9d7703d97d29bae52" class="anchor"></a> void 
 **print** ()
  
+ 
 void 
 <a href="class_a_v_l___tree.html#a6b939a947132379192ef9c98003eea2e" class="el">inOrder</a> (TreeNode \*current)
  
+ 
 Constructor & Destructor Documentation
 --------------------------------------
 
