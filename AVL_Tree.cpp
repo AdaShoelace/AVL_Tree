@@ -54,8 +54,8 @@ AVL_Tree::AVL_Tree() {
  * Destructor
  */
 AVL_Tree::~AVL_Tree() {
-    //destruct(this->root);
-    delete root;
+    destruct(this->root);
+    //delete root;
 }
 
 /**
